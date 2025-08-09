@@ -143,7 +143,15 @@ NOTES:
  */
 int bitXor(int x, int y)
 {
-  return 2;
+  // a = x | y
+  int a = ~((~x) & (~y));
+  // b = x & y
+  int b = x & y;
+  // c = a - b
+  int c = a & (~b);
+  // printf("x = %X, y = %X, a = %X, b = %X, c = %X, res = %X\n", x, y, a, b, c, (x ^ y));
+  // c == a ^ b == x ^ y
+  return c;
 }
 /*
  * tmin - return minimum two's complement integer
