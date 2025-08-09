@@ -161,8 +161,8 @@ int bitXor(int x, int y)
  */
 int tmin(void)
 {
-
-  return 2;
+  // Tmin = 1000...0 in binary
+  return (1 << 31);
 }
 // 2
 /*
