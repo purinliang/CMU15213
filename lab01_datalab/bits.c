@@ -174,7 +174,20 @@ int tmin(void)
  */
 int isTmax(int x)
 {
-  return 2;
+  // Tmax = 0111...1 in binary
+  // Tmax == ~Tmin, so res = (((~x) & Tmin) == Tmin)
+  // x + 1 == ~x if and only if x == Tmax or x == -1
+  // -1 == ~0
+  // x == y can implemented as (x | y) ^ (x & y) == 0 that is ~((x | y) ^ (x & y))
+  // x == y also can implemented as !(x ^ y)
+  int m1 = ~0;
+  int c1 = !(x ^ m1);
+  int a = x + 1;
+  int b = ~x;
+  int c2 = !(a ^ b);
+  // c is bool
+  // res is x != -1 && x + 1 == ~x
+  return !c1 & c2;
 }
 /*
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
