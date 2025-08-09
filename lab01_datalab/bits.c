@@ -231,7 +231,16 @@ int negate(int x)
  */
 int isAsciiDigit(int x)
 {
-  return 2;
+  // The last byte should be <= 9
+  // x + 6 will not carry
+  int bitmask = (~0) ^ (0x0F);
+  // bitmask = 0xFFFFFFF0
+  int target = 0x30;
+  // x & bitmask == target
+  // and (x + 6) & bitmask == target
+  int result1 = !((x & bitmask) ^ target);
+  int result2 = !(((x + 6) & bitmask) ^ target);
+  return result1 & result2;
 }
 /*
  * conditional - same as x ? y : z
