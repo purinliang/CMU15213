@@ -269,7 +269,19 @@ int conditional(int x, int y, int z)
  */
 int isLessOrEqual(int x, int y)
 {
-  return 2;
+  int check_same = !(x ^ y);
+  // x <= y <=> (x + (-y) <= 0)
+  // if upper_x < upper y return true
+  // if upper_x == upper y return lower_x <= lower_y
+  int upper_bitmask = ~0xFF;
+  int upper_x = x & upper_bitmask;
+  int upper_y = y & upper_bitmask;
+  int compare_upper = (((upper_x >> 4) + (~(upper_y >> 4) + 1)) >> 31) & 1;
+  int lower_x = x ^ upper_x;
+  int lower_y = y ^ upper_y;
+  int check_upper_same = !(upper_x ^ upper_y);
+  int compare_lower = ((lower_x + (~lower_y + 1)) >> 31) & 1;
+  return check_same | compare_upper | (check_upper_same & compare_lower);
 }
 // 4
 /*
