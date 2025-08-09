@@ -199,7 +199,14 @@ int isTmax(int x)
  */
 int allOddBits(int x)
 {
-  return 2;
+  int target = 0xAA;
+  target = target | (target << 2);
+  target = target | (target << 4);
+  target = target | (target << 8);
+  target = target | (target << 16);
+  // printf("target = %X\n", target);
+  // target == 0xAAAAAAAA
+  return !((x & target) ^ target);
 }
 /*
  * negate - return -x
