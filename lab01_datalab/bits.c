@@ -251,7 +251,14 @@ int isAsciiDigit(int x)
  */
 int conditional(int x, int y, int z)
 {
-  return 2;
+  int bitmask = !x;
+  bitmask = bitmask | (bitmask << 1);
+  bitmask = bitmask | (bitmask << 2);
+  bitmask = bitmask | (bitmask << 4);
+  bitmask = bitmask | (bitmask << 8);
+  bitmask = bitmask | (bitmask << 16);
+  // bitmask = 0xFFFFFFFF if x == 0, otherwise bitmask == 0
+  return (y & ~bitmask) | (z & bitmask);
 }
 /*
  * isLessOrEqual - if x <= y  then return 1, else return 0
