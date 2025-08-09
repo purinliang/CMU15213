@@ -312,7 +312,50 @@ int logicalNeg(int x)
  */
 int howManyBits(int x)
 {
-  return 0;
+  // 12 in [-16, 15], so res = 5
+  // -5 in [-8, 7], so res = 4
+  // 0 and -1 in [-1, 0], so res = 1
+  // if x < 0, let x = -(x + 1) = ~x
+  int bitmask = 0;
+  int all_ones = 0;
+  int cnt = 0;
+  bitmask = x & (1 << 31);
+  bitmask = bitmask | bitmask >> 1;
+  bitmask = bitmask | bitmask >> 2;
+  bitmask = bitmask | bitmask >> 4;
+  bitmask = bitmask | bitmask >> 8;
+  bitmask = bitmask | bitmask >> 16;
+  x = x ^ bitmask;
+  // let all 0s flip to 1s (except leading zeroes), for example 0b00101100 -> 0b00111111
+  x = x | x >> 1;
+  x = x | x >> 2;
+  x = x | x >> 4;
+  x = x | x >> 8;
+  x = x | x >> 16;
+  // count whether the lower 16 bits are all 1s
+  bitmask = 0xFF | (0xFF << 8);
+  all_ones = (!((x & bitmask) ^ bitmask)) << 4;
+  cnt = all_ones;
+  x = x >> all_ones;
+  // count whether the lower 8 bits are all 1s
+  bitmask = 0xFF;
+  all_ones = (!((x & bitmask) ^ bitmask)) << 3;
+  cnt = cnt + all_ones;
+  x = x >> all_ones;
+  // count whether the lower 4 bits are all 1s
+  bitmask = 0xF;
+  all_ones = (!((x & bitmask) ^ bitmask)) << 2;
+  cnt = cnt + all_ones;
+  x = x >> all_ones;
+  // count how many 1s in the rest 4 bits
+  cnt = cnt + (x & 1);
+  x = x >> 1;
+  cnt = cnt + (x & 1);
+  x = x >> 1;
+  cnt = cnt + (x & 1);
+  x = x >> 1;
+  cnt = cnt + (x & 1);
+  return cnt + 1;
 }
 // float
 /*
