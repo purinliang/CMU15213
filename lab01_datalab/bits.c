@@ -406,7 +406,42 @@ unsigned floatScale2(unsigned uf)
  */
 int floatFloat2Int(unsigned uf)
 {
-  return 2;
+  int sign = uf >> 31;
+  int exp_bitmask = (1 << 8) - 1;
+  int frac_bitmask = (1 << 23) - 1;
+  int exp = (uf >> 23) & exp_bitmask;
+  int frac = uf & frac_bitmask;
+  int invalid = 1 << 31;
+  if (exp == 0 && frac == 0)
+  {
+    return 0;
+  }
+  if (exp == exp_bitmask)
+  {
+    return invalid;
+  }
+  frac = frac | ((exp != 0) << 23);
+  exp = exp - (exp_bitmask >> 1) - 23; // E = exp - bias
+
+  while (exp > 0 && frac >= 0)
+  {
+    frac = frac << 1;
+    exp = exp - 1;
+  }
+  while (exp < 0)
+  {
+    frac = frac >> 1;
+    exp = exp + 1;
+  }
+  if (exp != 0)
+  {
+    return invalid;
+  }
+  if (sign)
+  {
+    frac = -frac;
+  }
+  return frac;
 }
 /*
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
