@@ -371,7 +371,26 @@ int howManyBits(int x)
  */
 unsigned floatScale2(unsigned uf)
 {
-  return 2;
+  int sign = uf >> 31;
+  int exp_bitmask = (1 << 8) - 1;
+  int frac_bitmask = (1 << 23) - 1;
+  int exp = (uf >> 23) & exp_bitmask;
+  int frac = uf & frac_bitmask;
+  int res = uf;
+  if (exp == exp_bitmask) // us is inf or nan
+  {
+    return res;
+  }
+  if (exp == 0)
+  {
+    frac = frac << 1; // overflow to exp is ok
+  }
+  else
+  {
+    exp = exp + 1;
+  }
+  res = (sign << 31) | (exp << 23) | frac;
+  return res;
 }
 /*
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
