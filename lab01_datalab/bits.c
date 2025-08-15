@@ -458,5 +458,15 @@ int floatFloat2Int(unsigned uf)
  */
 unsigned floatPower2(int x)
 {
-  return 2;
+  int exp_bitmask = (1 << 8) - 1;
+  int exp = x + (exp_bitmask >> 1);
+  if (exp > 0xFF)
+  {
+    exp = 0xFF;
+  }
+  if (exp < 0)
+  {
+    exp = 0;
+  }
+  return exp << 23;
 }
